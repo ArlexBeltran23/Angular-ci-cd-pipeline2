@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        registry = "arlexbeltran/authApp"
+        dockerImage = 'pipe_angular'
+    }
+
+    stages {
+        stage('Clean Up') {
+            steps {
+                cleanWs()
+                sh 'npm ci' 
+                sh 'npm run clean'
+            }
+        }
+        stage('Setup') {
+            steps {
+                sh 'npm install'
+                sh 'npm run test'
+
+            }
+        }
+        stage('Checkout') {
+            steps {
+                checkout scm 
+            }
+        }
+        stage('PR Validation') {
+            when {
+                changeset "origin/master"
+            }
+            steps {
+                script{
+                    def prN = env.CHANGE_ID
+                    echo "Validado pr #${prN}..."
+                }
+            }
+        }
+        stage('Build Angular App') {
+            steps {
+                sh 'npm run build --prod' 
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build(registry, "-f Dockerfile .")
+                }
+            }
+        }
+        stage('Publish to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        dockerImage.push("${env.BUILD_NUMBER}")
+                        dockerImage.push("latest") 
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            
+        }
+    }
+}
