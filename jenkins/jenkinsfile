@@ -10,7 +10,6 @@ pipeline {
         stage('Clean Up') {
             steps {
                 cleanWs()
-                sh 'npm ci'
                 sh 'npm run clean'
             }
         }
