@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Run ESLint') {
             steps {
-                sh 'npm run lint -- --format json --output-file eslint-report.json'
+                sh 'npm run eslint .'
             }
         }
         stage('Build Angular App') {
