@@ -26,7 +26,7 @@ pipeline {
         }
         stage('PR Validation') {
             when {
-                changeset script: "origin/master"
+                changeset to: "origin/master"
             }
             steps {
                 script {
