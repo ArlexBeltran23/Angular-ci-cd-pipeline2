@@ -10,7 +10,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 cleanWs()
-                sh 'npm ci' 
+                sh 'npm ci'
                 sh 'npm run clean'
             }
         }
@@ -18,12 +18,11 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'npm run test'
-
             }
         }
         stage('Checkout') {
             steps {
-                checkout scm 
+                checkout scm
             }
         }
         stage('PR Validation') {
@@ -31,15 +30,20 @@ pipeline {
                 changeset "origin/master"
             }
             steps {
-                script{
+                script {
                     def prN = env.CHANGE_ID
                     echo "Validado pr #${prN}..."
                 }
             }
         }
+        stage('Run ESLint') {
+            steps {
+                sh 'npm run lint -- --format json --output-file eslint-report.json'
+            }
+        }
         stage('Build Angular App') {
             steps {
-                sh 'npm run build --prod' 
+                sh 'npm run build --prod'
             }
         }
         stage('Build Docker Image') {
@@ -54,7 +58,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         dockerImage.push("${env.BUILD_NUMBER}")
-                        dockerImage.push("latest") 
+                        dockerImage.push("latest")
                     }
                 }
             }
@@ -62,7 +66,8 @@ pipeline {
     }
     post {
         always {
-            
+            // Publicar los resultados de ESLint
+            recordIssues tools: [eslint(pattern: 'eslint-report.json')]
         }
     }
 }
