@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Run ESLint') {
             steps {
-                sh 'npm run lint .'
+                sh 'npm run lint'
             }
         }
         stage('Build Angular App') {
