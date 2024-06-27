@@ -26,7 +26,7 @@ pipeline {
         }
         stage('PR Validation') {
             when {
-                changeset "origin/master"
+                changeset script: "origin/master"
             }
             steps {
                 script {
@@ -35,6 +35,7 @@ pipeline {
                 }
             }
         }
+
         stage('Run ESLint') {
             steps {
                 sh 'npm run lint'
