@@ -7,6 +7,11 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Clean Up') {
             steps {
                 cleanWs()
@@ -17,11 +22,6 @@ pipeline {
             steps {
                 sh 'npm install'
                 sh 'npm run test'
-            }
-        }
-        stage('Checkout') {
-            steps {
-                checkout scm
             }
         }
         stage('PR Validation') {
@@ -66,8 +66,10 @@ pipeline {
     }
     post {
         always {
-            // Publicar los resultados de ESLint
-            recordIssues tools: [eslint(pattern: 'eslint-report.json')]
+            script {
+                // Asegúrate de tener el plugin de ESLint instalado y configurado correctamente
+                recordIssues tools: [eslint(pattern: 'eslint-report.json')]
+            }
         }
     }
 }
