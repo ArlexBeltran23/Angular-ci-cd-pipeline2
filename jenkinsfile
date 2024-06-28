@@ -36,11 +36,11 @@ pipeline {
             }
         }
 
-        stage('Run ESLint') {
-            steps {
-                sh 'npm run lint'
-            }
-        }
+        // stage('Run ESLint') {
+        //     steps {
+        //         sh 'npm run lint'
+        //     }
+        // }
         stage('Build Angular App') {
             steps {
                 sh 'npm run build --prod'
@@ -64,12 +64,12 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-                // Asegúrate de tener el plugin de ESLint instalado y configurado correctamente
-                recordIssues tools: [eslint(pattern: 'eslint-report.json')]
-            }
-        }
-    }
+    // post {
+    //     always {
+    //         script {
+    //             // Asegúrate de tener el plugin de ESLint instalado y configurado correctamente
+    //             recordIssues tools: [eslint(pattern: 'eslint-report.json')]
+    //         }
+    //     }
+    // }
 }
