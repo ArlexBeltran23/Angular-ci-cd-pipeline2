@@ -12,12 +12,12 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Clean Up') {
-            steps {
-                cleanWs()
-                sh 'npm run clean'
-            }
-        }
+        // stage('Clean Up') {
+        //     steps {
+        //         cleanWs()
+        //         sh 'npm run clean'
+        //     }
+        // }
         stage('Setup') {
             steps {
                 sh 'npm install'
